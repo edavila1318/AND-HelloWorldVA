@@ -1,7 +1,7 @@
 package com.example.a002loginexample.Cards
 
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
+import com.example.a002loginexample.dataBase.RealmSyncService
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -28,7 +28,14 @@ class cardApi {
             ){
             if(response.code()==200)
             {
+
+
                 var cardsResponse = response.body()!!
+
+                //database
+                val realmSyncService = RealmSyncService()
+                realmSyncService.doSync(cardsResponse)
+
                 var adapter = cardsAdapter(cardsResponse)
                 recyclerView.adapter = adapter
             }

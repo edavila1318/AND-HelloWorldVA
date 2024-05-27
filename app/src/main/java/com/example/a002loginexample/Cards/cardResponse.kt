@@ -2,22 +2,22 @@ package com.example.a002loginexample.Cards
 
 import com.google.gson.annotations.SerializedName
 
-class cardResponse {
+class cardResponse (
 
 
         @SerializedName("user_id")
-        val userId: String? = null
+        val userId: String,
         @SerializedName("card_id")
-        val cardId: String? = null
+        val cardId: String,
         @SerializedName("card_number")
-        val cardNumber: String? = null
+        val cardNumber: String,
         @SerializedName("card_name")
-        val cardName: String? = null
+        val cardName: String,
         @SerializedName("card_expiration_date")
-        val cardExpirationDate: String? = null
+        val cardExpirationDate: String,
         @SerializedName("card_cvv")
-        val cardCvv: String? = null
+        val cardCvv: String,
         @SerializedName("card_image_url")
-        val cardImageUrl: String? = null
+        val cardImageUrl: String,
 
-}
+)
