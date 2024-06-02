@@ -4,6 +4,7 @@ import com.example.a002loginexample.Cards.cardResponse
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,8 +22,12 @@ class realmCardsDAO : BaseDAO() {
         return  flow{
             val realm = Realm.open(config)
             realm.write {
-                copyToRealm(RealmCardsResponse().apply {
+
+
+
                     cardsResponse.map {cardItem ->
+                        copyToRealm(
+                        RealmCardsResponse().apply {
                         userID = cardItem.userId.toString()
                         cardID = cardItem.cardId.toString()
                         cardNumber = cardItem.cardNumber.toString()
@@ -31,9 +36,10 @@ class realmCardsDAO : BaseDAO() {
                         cardCVV = cardItem.cardCvv.toString()
                         cardImageURL = cardItem.cardImageUrl.toString()
 
-                    }
+                    }, updatePolicy = UpdatePolicy.ALL)
 
-                }, updatePolicy = UpdatePolicy.ALL)
+                }
+
             }
             realm.close()
             emit(true)
@@ -41,14 +47,16 @@ class realmCardsDAO : BaseDAO() {
 
     }
 
-    fun getCards(): Flow<cardResponse?>{
+    fun getCards(): Flow<List<cardResponse?>>{
         return  flow {
             val realm= Realm.open(config)
-            var result: cardResponse? = null
+            var result: List<cardResponse> = listOfNotNull()
             realm.write {
                 val realCardsResponse = realm.query<RealmCardsResponse>().find()
-                val realmCard = realCardsResponse.first()!!
-                result = realmCard.toCardsResponse()
+                val realmCard = realm.copyFromRealm(realCardsResponse)
+                result = realmCard.map { card ->
+                    card.toCardsResponse()
+                }
             }
             realm.close()
             emit(result)
